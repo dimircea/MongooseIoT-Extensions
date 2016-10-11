@@ -1,3 +1,4 @@
+// NOTE: copy this file to: fw/platforms/esp8266/user folder.
 #ifndef DHT_LIBRARY
 #define DHT_LIBRARY
 
@@ -17,7 +18,7 @@
  *	the sensor read humidity value (pointer to)
  * @return true (1) when checksum data verifies, false (0) otherwise.
  */
-bool dht_read(uint8_t sensorType, uint8_t pin, double* temperature, double* humidity);
+bool dhtRead(uint8_t sensorType, uint8_t pin, double* temperature, double* humidity);
 #endif
 
 #endif /* DHT_LIBRARY */

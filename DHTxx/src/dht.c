@@ -5,7 +5,7 @@
 #include "fw/platforms/esp8266/user/v7_esp_features.h"
 #include "fw/platforms/esp8266/user/esp_gpio.h"
 
-
+// NOTE: copy this file to: fw/platforms/esp8266/user folder.
 #ifdef V7_ESP_ENABLE__DHT
 
 static uint16_t waitLHCycle(uint8_t pin, uint32_t* maxCycles) {
@@ -20,13 +20,13 @@ static uint16_t waitLHCycle(uint8_t pin, uint32_t* maxCycles) {
   return highLength > lowLength;
 };
 
-static uint8_t dht_read_byte(uint8_t pin, uint32_t* maxCycles) {
+static uint8_t dhtReadByte(uint8_t pin, uint32_t* maxCycles) {
   uint8_t result = 0, bits = 8;
   while(bits-- > 0) result = result << 1 | waitLHCycle(pin, maxCycles);
   return result;
 };
 
-bool dht_read(uint8_t sensorType, uint8_t pin, double* temperature, double* humidity) {
+bool dhtRead(uint8_t sensorType, uint8_t pin, double* temperature, double* humidity) {
   uint32_t maxCycles = 100000;
   uint8_t dataBytes[5] = {0}, i = 0;
   uint8_t checksum = 0;
@@ -47,7 +47,7 @@ bool dht_read(uint8_t sensorType, uint8_t pin, double* temperature, double* humi
   waitLHCycle(pin, &maxCycles);
   if (maxCycles <= 0) return false;
   // read the 5 data bytes from the sensor
-  for (i = 0; i < 5; i++) dataBytes[i] = dht_read_byte(pin, &maxCycles);
+  for (i = 0; i < 5; i++) dataBytes[i] = dhtReadByte(pin, &maxCycles);
   // extract temperature and humidity data based on sensor type
   if (sensorType == 1) { //DHT11
 	*humidity = dataBytes[0];

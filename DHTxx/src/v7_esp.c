@@ -1,4 +1,4 @@
-// NOTE: add the following code as part of the directive: 
+// NOTE: add the following code in the fw/platforms/esp8266/user/v7_esp_features.h file, as part of the directive: 
 //       #ifdef MG_ENABLE_JS  
 //       ... 
 //       #endif
@@ -25,7 +25,7 @@ static enum v7_err DHT_read(struct v7 *v7, v7_val_t *result) {
   double temperature = 0.0;
   double humidity = 0.0;
   const char* sTypeName = (sType == 1 ? "DHT11" : (sType == 2 ? "DHT21" : "DHT22"));
-  if (!dht_read(sType, pin, &temperature, &humidity)) {
+  if (!dhtRead(sType, pin, &temperature, &humidity)) {
     *result = v7_mk_null();
     return V7_OK;
   }
