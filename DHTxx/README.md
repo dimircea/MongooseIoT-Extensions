@@ -6,7 +6,7 @@ This extension allows to read DHT11/21/22 sensors by using JavaScript code, on a
 
 To read a DHT11 sensor connected on GPIO5 of an Amica NodeMCU v2 ESP8266 based board, use the following code:
 ```
-Dht.read(Dht.TypeEL.DHT1, 5);
+Dht.read(Dht.TypeEL.DHT11, 5);
 ```
 It returns a JSON object with the following format:
 ```
