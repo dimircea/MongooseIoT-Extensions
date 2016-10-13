@@ -1,4 +1,4 @@
-// NOTE: add the following code in the fw/platforms/esp8266/user/v7_esp_features.h file, as part of the directive: 
+// NOTE: add the following code in the fw/platforms/esp8266/user/v7_esp.c file, as part of the directive: 
 //       #ifdef MG_ENABLE_JS  
 //       ... 
 //       #endif
@@ -12,23 +12,30 @@ static enum v7_err DHT_read(struct v7 *v7, v7_val_t *result) {
   v7_val_t sensorTypeArg = v7_arg(v7, 0);
   v7_val_t pinArg = v7_arg(v7, 1);
   
+  // validate the first parameter - the DHT sensor type (11, 21, or 22)
   if (!v7_is_number(sensorTypeArg) || 
-	  (v7_get_double(v7, sensorTypeArg) != 1 
-	   && v7_get_double(v7, sensorTypeArg) != 2 
-	   && v7_get_double(v7, sensorTypeArg) != 3)) return v7_throwf(v7, "Error", 
-	"Required sensor type (param 1) - Dht.TypeEL.DHTxx (e.g., Dht.TypeEL.DHT22).");
-  if (!v7_is_number(pinArg)) return v7_throwf(v7, "Error", 
-	"Required GPIO number (param 2) - a positive integer (e.g., 5 for GPIO5).");
+	  (v7_get_double(v7, sensorTypeArg) != 1 && v7_get_double(v7, sensorTypeArg) != 2 
+	   && v7_get_double(v7, sensorTypeArg) != 3)) 
+    return v7_throwf(v7, "Error", "Required sensor type (param 1) - Dht.TypeEL.DHTxx (e.g., Dht.TypeEL.DHT22).");
+    
+  // validate the second parameter - the GPIO pin number
+  if (!v7_is_number(pinArg)) 
+    return v7_throwf(v7, "Error", "Required GPIO number (param 2) - a positive integer (e.g., 5 for GPIO5).");
 
   uint8_t pin = v7_get_int(v7, pinArg);
   uint8_t sType = v7_get_int(v7, sensorTypeArg);
   double temperature = 0.0;
   double humidity = 0.0;
   const char* sTypeName = (sType == 1 ? "DHT11" : (sType == 2 ? "DHT21" : "DHT22"));
+  
+  // read the DHT sensor and check if the read was a successful
   if (!dhtRead(sType, pin, &temperature, &humidity)) {
-    *result = v7_mk_null();
-    return V7_OK;
+    // error reading DHT sensor...normally this is a check sum error
+    return v7_throwf(v7, "Error", "Failed to read the DHT sensor!");
   }
+  
+  // create the result JavaScript object and append the 
+  // "type", "temperature" and "humidity" properties, as well as their values
   *result = v7_mk_object(v7);
   v7_set(v7, *result, "type", 4, v7_mk_string(v7, sTypeName, 5, 1));
   v7_set(v7, *result, "temperature", 11, v7_mk_number(v7, temperature));
