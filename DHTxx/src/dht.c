@@ -50,14 +50,14 @@ bool dhtRead(uint8_t sensorType, uint8_t pin, double* temperature, double* humid
   for (i = 0; i < 5; i++) dataBytes[i] = dhtReadByte(pin, &maxCycles);
   // extract temperature and humidity data based on sensor type
   if (sensorType == 1) { //DHT11
-	*humidity = dataBytes[0];
-	*temperature = dataBytes[2];  
+    *humidity = dataBytes[0];
+    *temperature = dataBytes[2];  
   } else if (sensorType == 2 || sensorType == 3) { // DHT21 and DHT22
-	*humidity = (dataBytes[0] * 256 + dataBytes[1]) * 0.1;
-	*temperature = (dataBytes[2] * 256 + dataBytes[3]) * 0.1;
+    *humidity = (dataBytes[0] * 256 + dataBytes[1]) * 0.1;
+    *temperature = (dataBytes[2] * 256 + dataBytes[3]) * 0.1;
   } else { // unknown sensor type
-	*humidity = -9999;
-	*temperature = -9999;  
+    *humidity = -9999;
+    *temperature = -9999;  
   }
   // compute checksum
   for (i = 0; i < 4; i++) checksum += dataBytes[i];
